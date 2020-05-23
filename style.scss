@@ -1,0 +1,224 @@
+body,
+html {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    font-family: courier;
+    font-weight: bold;
+}
+
+.cal {
+    z-index: 5;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.day {
+    user-select: none;
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 0.75rem;
+    position: relative;
+    z-index: 9;
+    cursor: pointer;
+    &:focus {
+        outline: none;
+    }
+    &:after {
+        transition: all 0.4s;
+        content: '';
+        position: absolute;
+        z-index: -1;
+    }
+}
+
+#light {
+    position: absolute;
+    width: 15rem;
+    height: 15rem;
+    z-index: 4;
+    border-radius: 50%;
+    transform: translate3d(-50%, -50%, 0);
+}
+
+// grid
+.grid-container {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr 401px 1fr;
+    grid-template-rows: 0.5fr 250px 1fr;
+    grid-gap: 0px 0px;
+    grid-template-areas: 'top top top' 'left content right' 'bottom bottom bottom';
+}
+
+.top {
+    grid-area: top;
+}
+
+.left {
+    grid-area: left;
+}
+
+.content {
+    grid-area: content;
+}
+
+.right {
+    grid-area: right;
+}
+
+.bottom {
+    grid-area: bottom;
+}
+
+.mask {
+    position: relative;
+    z-index: 99;
+}
+
+.themes {
+    position: relative;
+    z-index: 100;
+    ul {
+        margin: 0;
+        display: flex;
+        padding: 2rem;
+        justify-content: center;
+        align-items: center;
+    }
+    li {
+        width: 3rem;
+        height: 3rem;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        border: 2px solid transparent;
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+// put all coloring in a mixin for easier theming
+@mixin theme( $fg: #eee, $bg: #292c33, $highlight: $fg, $bw: 2px, $hoverBg: darken($bg, 5%), $lightColor: $fg) {
+    background-color: $bg;
+    color: $fg;
+    .mask {
+        background: $bg;
+    }
+    .oom {
+        color: rgba($fg, 0.4);
+    }
+    #light {
+        background: radial-gradient( ellipse at center, rgba($lightColor, 0.5) 0%, rgba($lightColor, 0) 50%);
+    }
+    .day {
+        border: 2px solid $bg;
+        &:after {
+            background-color: $bg;
+            top: $bw;
+            bottom: $bw;
+            right: $bw;
+            left: $bw;
+        }
+        &:not(.oom) {
+            &:hover {
+                background-color: $highlight;
+                &:after {
+                    background-color: $hoverBg;
+                }
+            }
+        }
+    }
+    .themes {
+        background-color: $bg;
+    }
+}
+
+// ...and define some themes
+.theme-default {
+    @include theme(#eee, #292c33, #eee, 2px, lighten(#292c33, 10%));
+    & & {
+        border-color: #fff;
+    }
+}
+
+.theme-2 {
+    @include theme(#bada55, #233b23, #bada55, 3px);
+    & & {
+        border-color: #fff;
+    }
+}
+
+.theme-3 {
+    @include theme(#cd7bff, #112, #cd7bff, 2px, lighten(#112, 10%));
+    & & {
+        border-color: #fff;
+    }
+}
+
+.theme-4 {
+    @include theme(#111, #cd7bff, darken(#cd7bff, 10%), 1px);
+    & & {
+        border-color: #fff;
+    }
+}
+
+.theme-5 {
+    @include theme(#db2a2a, #211);
+    & & {
+        border-color: #fff;
+    }
+}
+
+.theme-6 {
+    @include theme( rebeccapurple, lightgoldenrodyellow, darksalmon, 3px, lightgoldenrodyellow, mediumspringgreen);
+    & & {
+        border-color: #fff;
+    }
+}
+
+// Crazy crazy easter eggs. ;)
+.day {
+    transition: all 0.2s;
+    &:focus {
+        background-color: #ccc;
+    }
+    &:nth-child(10) {
+        &:focus {
+            transform: translateY(-0.35rem);
+        }
+    }
+    &:nth-child(13) {
+        transition-duration: 0.6s;
+        &:focus {
+            transform: rotate(360deg);
+        }
+    }
+    &:nth-child(20) {
+        transition-duration: 0.6s;
+        &:focus {
+            transform: rotateY(180deg);
+        }
+    }
+    &:nth-child(24) {
+        transition-duration: 0.4s;
+        &:focus {
+            z-index: 19;
+            transform: rotate(10deg) scale(1.1);
+        }
+    }
+    &:nth-child(29) {
+        transition-duration: 0.4s;
+        &:focus {
+            z-index: 19;
+            transform: rotate(10deg) translate3d(0.25rem, -0.3rem, 2rem);
+        }
+    }
+}
